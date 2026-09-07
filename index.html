@@ -1,22 +1,385 @@
-<!doctype html>
-<html lang="en">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>MXNDR</title>
-<style>
-body{background:#0c0c0c;color:#b7ab98;font:16px/1.7 system-ui,-apple-system,sans-serif;margin:0;
-display:flex;flex-direction:column;justify-content:center;min-height:100vh;padding:6vh 6vw;max-width:720px}
-h1{color:#f1ede4;font-size:2rem;letter-spacing:.3em;margin:0 0 .2em}
-a{color:#eb5939;display:block;margin:.3em 0}
-p{margin:.2em 0 2em}
+<!DOCTYPE html><html lang="hu" class="js no-system-cursor" style="--vh: 9px;"><head><style class="vjs-styles-defaults">
+      .video-js {
+        width: 300px;
+        height: 150px;
+      }
+
+      .vjs-fluid:not(.vjs-audio-only-mode) {
+        padding-top: 56.25%
+      }
+    
+/* Ender fotoja a nyitokepben: allo kep (1152x2048) fekvo savba, ezert object-fit
+   es egy sotetito atmenet, kulonben a szoveg elvesz rajta. */
+.hero_bg img{ width:100%; height:100%; object-fit:cover; object-position:50% 32%;
+  filter:grayscale(.25) contrast(1.08) brightness(.72); }
+.hero_bg::after{ content:""; position:absolute; inset:0; z-index:1;
+  background:linear-gradient(180deg, rgba(13,1,6,.55) 0%, rgba(13,1,6,.25) 40%, rgba(13,1,6,.8) 100%); }
+.layer__red .hero_bg img{ display:none; }
+
+/* MXNDR jel a fejlecben (2092x995, feher, egyszinu) */
+.link-logo .logo-img{ width:5.2rem; height:auto; display:block; }
+.layer__red .link-logo .logo-img{ filter:brightness(0) saturate(100%); }
+
+/* A felso (akcentus) retegen a kiemelt szo NEM lehet akcentus-szinu,
+   mert az a reteg hattere. Ott sotetnek kell lennie. */
+.layer__red strong,
+.layer__red h1 strong,
+.layer__red .h1 strong{ color:#0D0106 !important; }
+.layer__red{ color:#0D0106; }
+
+/* A nyitokep folotti felirat a logo-csomagbol, nem betuvel szedve */
+.hero_content_inner_subtitle .wordmark-img{ width:14rem; height:auto; margin:0 auto; display:block; }
+.layer__red .hero_content_inner_subtitle .wordmark-img{ filter:brightness(0); }
+.hero_content_inner_subtitle .wordmark-img{ width:14rem; height:auto; margin:0 auto; display:block; }
+
+/* A videolejatszo nagy PRESS-gombja forras nelkul a lap tetejere esik,
+   nulla merettel. Amig nincs videonk, elrejtjuk. */
+/* CSAK a videolejatszo nagy gombjat rejtjuk. A .btn_clipPath_image__ring a MOBIL
+   nyomva-tartos felfedes forgo PRESS felirata, azt egyszer tevedesbol elrejtettem. */
+.videoPlayer_btn, .js-btnBigPlay{ display:none !important; }
+
+/* --- 2026-08-28, Ender keresei --- */
+
+/* A gorgetesre felfedo szoveg KET masolatot hasznal: egy halvany hatteret (is-bg,
+   abszolut pozicioval) es egy felfedo maszkot. A tartalom cserejekor a ket masolat
+   sortorese elcsuszott egymastol, ezert latszott ket szoveg egymas alatt, es a
+   940 kepponyt magas abszolut hatter-masolat belelogott a kovetkezo szekcioba is.
+   A halvany masolatot elrejtjuk: a felfedo maszk onmagaban olvashato. */
+.scroll-paragraph-mask.is-bg{ display:none !important; }
+/* A ket reteg bekezdese 11 kepponyttal el volt csuszva egymastol (75 vs 96 keppont
+   magassag), mert csak az alsora vonatkozott a sorkoz-szabaly. Most azonos. */
+.about_content_desc, .about_content_desc .scroll-paragraph-mask,
+.layer__red .about_content_desc, .layer__red .scroll-paragraph-mask{
+  font-size:5rem !important; line-height:1.12 !important; }
+/* a modul a szoveget tobb helyre is klonozza; a klonok elvesztettek a meretet */
+.scroll-paragraph-mask, .scroll-paragraph-mask *{ font-size:5rem !important; line-height:1.12 !important; }
+.scroll-paragraph-mask.is-bg{ opacity:.16; }
+
+/* A hero magassagat a referencia egy JS-bol jovo --vh valtozobol szamolja;
+   nalunk 689 kepponytra allt be, ezert vagott el a foto. Kotjuk a kepernyohoz. */
+.hero{ min-height:100svh !important; }
+.hero_content{ height:100svh !important; min-height:100svh !important; }
+
+/* bal felul a MAX ENDER felirat (5406x495) */
+.link-logo .logo-img{ width:11rem !important; height:auto; display:block; }
+.layer__red .link-logo .logo-img{ filter:brightness(0) saturate(100%); }
+
+/* fent kozepen MXNDR, a kor alatt MAX ENDER */
+.hero_content_inner_subtitle .wordmark-img{ width:7.5rem; height:auto; margin:0 auto; display:block; }
+.hero_content_inner_subtitle .wordmark-img--alt{ width:11.5rem; filter:brightness(0); }
+
+/* A cim a referencia sajat meretet hasznalja, nincs sajat felulirasunk.
+   Negy sorban kifer: 4 x 116,7 x 1,12 = 523 keppont, plusz a 310 keppontnyi
+   also-felso terkoz, osszesen 833, a 900-as kepernyon belul. */
+.hero_content_inner{ max-width:none; }
+
+/* a foto a jobb oldalra, szoros vagassal, nem teljes kepernyos nagyitas */
+.hero_bg{ left:auto !important; right:0 !important; width:52% !important;
+  top:0 !important; bottom:0 !important; height:100% !important; --pr-height:100% !important; }
+.hero_bg > div{ width:100% !important; height:100% !important; }
+.hero_bg img{ width:100%; height:100%; object-fit:cover; object-position:50% 22%;
+  filter:grayscale(.3) contrast(1.05) brightness(.8); }
+.hero_bg::after{ content:""; position:absolute; inset:0; z-index:1;
+  background:linear-gradient(90deg, #0D0106 0%, rgba(13,1,6,.6) 22%, rgba(13,1,6,0) 60%); }
+@media (max-width:767px){
+  .hero_bg{ width:100% !important; }
+  .hero_bg::after{ background:linear-gradient(180deg, rgba(13,1,6,.5) 0%, rgba(13,1,6,.85) 70%); }
+}
+
+/* ---------- nyelvvalto ---------- */
+.lang-switch{
+  all:unset; cursor:pointer; display:block; margin-top:2.6rem; margin-left:auto;
+  font-family:"Jost",sans-serif; font-weight:600; font-size:.875rem;
+  line-height:1.8; letter-spacing:.18em; text-transform:uppercase;
+  opacity:.55; transition:opacity .25s;
+}
+.lang-switch:hover, .lang-switch:focus-visible{ opacity:1; }
+.layer__red .lang-switch{ opacity:1; }
+
+/* ---------- reel: teljes szeles video ---------- */
+/* A piros reteg maszk-kore z-index 5-on ul es a videora festene egy sotet foltot.
+   A videot fole emeljuk, igy a kor nem takarja a Lejatszas feliratot. */
+.reel{ position:relative; z-index:6; width:100%; aspect-ratio:16/9; overflow:hidden; background:#0D0106; }
+.reel--red{ z-index:auto; }
+.reel__bg{ width:100%; height:100%; object-fit:cover; display:block; }
+.reel__bg--flat{ width:100%; height:100%; background:rgba(13,1,6,.14); }
+.reel__hit{ position:absolute; inset:0; cursor:none; z-index:2; }
+.reel__cursor{
+  position:absolute; top:0; left:0; z-index:3; pointer-events:none;
+  /* 5,75rem: PONTOSAN akkora, mint az eredeti motor sajat lejatszo-gombja
+     (.videoPlayer_btn height:5.75rem). Elotte 11,5rem volt, azaz ketszerese --
+     Ender szurta ki. Ha valaha megint elallitodik, ez a referencia. */
+  width:5.75rem; height:5.75rem; margin:-2.875rem 0 0 -2.875rem; border-radius:50%;
+  background:var(--accent,#D2504A); color:#0D0106;
+  display:flex; align-items:center; justify-content:center;
+  font-family:"Jost",sans-serif; font-weight:600; font-size:.6875rem;
+  letter-spacing:.1em; text-transform:uppercase;
+  opacity:0; transform:scale(.4);
+  transition:opacity .25s, transform .35s cubic-bezier(.165,.84,.44,1);
+}
+.reel.is-hover .reel__cursor{ opacity:1; transform:scale(1); }
+@media (hover:none){ .reel__hit{ cursor:pointer; } .reel__cursor{ display:none; } }
+
+/* ---------- teljes kepernyos lejatszo ---------- */
+.reel-modal{
+  position:fixed; inset:0; z-index:200; background:#0D0106;
+  display:none; align-items:center; justify-content:center;
+}
+.reel-modal.is-open{ display:flex; }
+.reel-modal__frame{ width:100%; height:100%; }
+.reel-modal__frame iframe{ width:100%; height:100%; border:0; display:block; }
+.reel-modal__close{
+  all:unset; position:absolute; top:2rem; right:2.4rem; z-index:2; cursor:pointer;
+  font-family:"Jost",sans-serif; font-weight:600; font-size:1rem;
+  letter-spacing:.2em; text-transform:uppercase; color:var(--text,#DCECE0); opacity:.7;
+}
+.reel-modal__close:hover{ opacity:1; }
+
+/* ---------- mobil javitasok (2026-08-29) ---------- */
+html, body{ max-width:100%; overflow-x:hidden; }
+.layer, .container, .main-layer{ max-width:100vw; overflow-x:clip; }
+/* a Bootstrap sorok negativ margoja lokte ki oldalra a lapot */
+.row{ margin-left:0 !important; margin-right:0 !important; }
+
+@media (max-width:767px){
+  /* a fejlec ne legyen zsufolt: kisebb logo, szellosebb menu */
+  .link-logo .logo-img{ width:7.5rem !important; }
+  .frame__nav, .header_menu{ gap:.2rem; }
+  .header_menu_list{ line-height:1.5; }
+  .lang-switch{ margin-top:1.6rem; }
+  /* a nyitokep szovegblokk ne erjen a fejlechez */
+  .hero_content_inner{ padding-top:3rem; }
+}
+
+/* a mobil nyomva-tartos gomb legyen jol lathato */
+.btn_clipPath{ z-index:30; }
+
+/* Nezopont (Ender kerese 2026-09-04, JAVITVA 09-05):
+   a szoveg NEM egerre valtozik, hanem a KOR ALATT. A lap ket retegben letezik, es a
+   piros reteget a kurzort koveto kor alakú maszk fedi fel: eleg tehat a ket retegbe MAS
+   szoveget tenni, sajat JavaScript nelkul. A megvaltozo szavakat a felso (piros) retegben
+   emeljuk ki, SOTET szinnel -- akcentus-szinu nem lehet, mert az a sajat hattere. */
+.about_content_desc, .scroll-paragraph-mask{ letter-spacing: -0.01em; }
+/* NEZOPONT SZEKCIO (Ender pontos kerese 2026-09-05):
+   - ket bekezdes, egyenkent OT sor, hogy a kurzort koveto kor egy mozdulattal atfogja;
+   - a ket reteg KOTOTT sortoressel (<br>) dolgozik, kulonben nem fedik egymast;
+   - a kulonbozo szavakat CSAK SZIN emeli ki, meret NEM: "a betu felnagyitasa szetcseszi az
+     egyseges kinezetet";
+   - az automata sorra-bontast kikapcsoltuk erre a bekezdesre (nincs js- horog), mert az
+     inline spanokat kihagyta a .line dobozokbol, es azok igy 66 keppontosak maradtak.
+   A magyar ekezet miatti vagast a padding + negativ margo oldja meg, nem a sorkoz. */
+.about_content_desc.h2, .about_content_desc.h2 .scroll-paragraph-mask{
+  /* A meret NEM izles: ez a legnagyobb, amivel a kotott sorok meg egy sorban maradnak.
+     Merve 2026-09-05: a 943 keppont szeles hasabban a leghosszabb sorunk ("hallgatunk zenet:
+     hogy elinduljon") 60 keppontnal fer ki, 61-nel mar tordelne, es akkor 5 sor helyett 7-8
+     lenne a blokk. */
+  font-size: min(4.5rem, 4.1vw) !important;
+  line-height: 1.2 !important;
+  letter-spacing: -0.015em !important;
+}
+/* A ket reteg cimkeje mas tag (h2 a sotetben, p a pirosban), es az eltero alap-margo
+   miatt a piros reteg 8 keppontal lejjebb indult. A kor-felfedesnel ez lathato csuszas. */
+/* A ket reteg cimkeje mas TAG (h2 a sotetben, p a pirosban), es az eltero alap-meret meg
+   sorkoz miatt a piros reteg 8 keppontal lejjebb indult -- a kor-felfedesnel ez lathato csuszas.
+   Ezert nem eleg a margot egyeznie: a magassagot is rogziteni kell mindkettoben. */
+.about_content_label{ margin: 0 0 2.5rem !important; font-size: .8125rem !important;
+  line-height: 1.6 !important; }
+/* FONTOS: van egy korabbi szabaly a lapon, ami MINDEN gyereket 5rem-re kenyszerit a maszkon
+   belul (`.scroll-paragraph-mask *{ font-size:5rem !important }`) -- az a klonozaskor elveszo
+   betumeret javitasa volt. Ezert kell ket osztalyos szelektor es !important, kulonben a
+   bekezdeseink 66 keppontosak maradnak, es a kotott sorok tordelnek. */
+.about_content_desc .nezopont-blokk,
+.about_content_desc .nezopont-blokk span{
+  font-size: min(4.5rem, 4.1vw) !important;
+  line-height: 1.2 !important;
+}
+.nezopont-blokk{
+  margin: 0 0 1.1em; padding-top: .18em; margin-top: -.18em;
+}
+.nezopont-blokk:last-child{ margin-bottom: 0; }
+/* A SZLOGEN MERETE. A lap gyoker-betumerete a szelesseggel no (2560 keppontnal 23,7 px),
+   ezert a 8,75rem ott mar 207 keppont, es a 100vh magas .hero levagja. Merve 2026-09-05-en:
+   2560x1440-nel 17, 2560x1329-nel 110, 1920x1080-nal 13, 1440x780-nal 35 keppont hianyzott.
+   Ezert a meretet az ABLAK MAGASSAGAHOZ is kotjuk, nem csak a szelessegehez. */
+.hero h1{ font-size: min(8.75rem, 11vh) !important; padding-top: .12em; margin-top: -.12em; }
+.szo-valt, .szo-valt-piros{ font-size: inherit !important; line-height: inherit !important; }
+.szo-valt{ color: #BA4F44; }        /* sotet retegen a markajel akcentus */
+.szo-valt-piros{ color: #0E050A; }  /* piros hatteren sotet, mert az akcentus a sajat hattere */
+.nezopont-idezet{ margin-top: 2.4rem; font-size: .95rem; line-height: 1.6; opacity: .75; }
+.nezopont-idezet_dal{ display:block; margin-top:.35rem; font-size:.8rem; letter-spacing:.08em;
+  text-transform: uppercase; opacity:.6; }
+</style><style class="vjs-styles-dimensions">
+      .videoPlayer-dimensions {
+        width: 1920px;
+        height: 1080px;
+      }
+
+      .videoPlayer-dimensions.vjs-fluid:not(.vjs-audio-only-mode) {
+        padding-top: 56.25%;
+      }
+    </style><meta charset="UTF-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>MXNDR - Max Ender</title><meta name="description" content="Max Ender: dalok, amikben történet van. Magyar és angol dalszövegek, saját világ. A vászon a befogadóban van."><script>history.scrollRestoration = "manual";</script><meta name="robots" content="max-snippet:-1, max-image-preview:large, max-video-preview:-1"><meta name="generator" content="Powered by DevHonTran@2023 - Creative developer."><meta property="og:locale" content="en_US"><meta property="og:type" content="website"><meta property="og:title" content="MXNDR - Max Ender"><meta property="og:description" content="Max Ender: dalok, amikben történet van. Magyar és angol dalszövegek, saját világ. A vászon a befogadóban van."><meta property="og:site_name" content="MXNDR"><meta property="og:image:width" content="1200"><meta property="og:image:height" content="630"><meta name="twitter:card" content="summary_large_image"><meta name="twitter:description" content="Max Ender: dalok, amikben történet van. Magyar és angol dalszövegek, saját világ. A vászon a befogadóban van."><meta name="twitter:title" content="MXNDR"><link rel="apple-touch-icon" sizes="180x180" href="assets/favicon/apple-touch-icon.png"><link rel="icon" type="image/png" sizes="32x32" href="assets/favicon/favicon-32x32.png"><link rel="icon" type="image/png" sizes="16x16" href="assets/favicon/favicon-16x16.png"><link rel="manifest" href="assets/favicon/site.webmanifest"><link rel="mask-icon" href="assets/favicon/safari-pinned-tab.svg" color="#0d0d0d"><meta name="msapplication-TileColor" content="#0d0d0d"><meta name="theme-color" content="#0d0d0d"><script>/* <![CDATA[ */
+      var siteData = {"siteUrl": "https://mxndr"};
+      /* ]]> */</script><script src="assets/js/caching.js?v=1.0.0.3"></script><style>body:not(.site__template-mobile) .is-animation-loading {
+            opacity: 0;
+        }
+
+        body, html {
+            scroll-behavior: unset !important;
+            overscroll-behavior-y: none !important;
+        }
+
+        /* Hide scrollbar for Chrome, Safari and Opera */
+        body::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Hide scrollbar for IE, Edge and Firefox */
+        body {
+            -ms-overflow-style: none; /* IE and Edge */
+            scrollbar-width: none; /* Firefox */
+        }</style><script async="" src="https://www.googletagmanager.com/gtag/js?id=G-79VFDFP12E"></script><script>window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+
+      gtag('config', 'G-79VFDFP12E');</script><script defer="defer" src="vendor.bundle.js?v=1.0.0.3"></script><script defer="defer" src="app.bundle.js?v=1.0.0.3"></script><link href="app.css?v=1.0.0.3" rel="stylesheet"><link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap">
+<style id="mxndr-fix">
+/* AZ EGYETLEN ERTEK, AMIT A REFERENCIAHOZ KEPEST MEGVALTOZTATTUNK: a sorkoz.
+   Merve, Jost 700, 100px betumeret mellett:
+     ekezet nelkuli nagybetu (MAKING GOOD)  felnyulas 74,4  lelogas 3,5
+     magyar nagybetus ekezet (AEIOOU)       felnyulas 100,7
+   A referencia 84 szazalekos sorkoze angol szovegre jo, magyarra fizikailag
+   keves: az ekezet belelog az elozo sorba. A merheto also hatar kb. 104 szazalek,
+   ezert 112. A betukoz marad a referencia -.05em erteke, azt ellenoriztuk:
+   karakterenkent merve nulla atfedes. */
+h1, .h1, .display{ line-height:1.12 !important; }
+.h2, h2, .about_content_desc, .work_content_desc{ line-height:1.12 !important; }
+h3, .h3{ line-height:1.15 !important; }
 </style>
-</head>
-<body>
-<h1>MXNDR</h1>
-<p>Magyar népdal &times; melodic house / techno</p>
-<a href="https://linktr.ee/mxndr">Music and links</a>
-<a href="privacy.html">Privacy policy</a>
-<a href="terms.html">Terms of service</a>
-</body>
-</html>
+<!-- og:image, og:url es canonical KIVEVE 2026-08-31: a referencia-oldalrol maradt bent, es a nem letezo "https://mxndr" domainre mutatott. Egy ROSSZ kanonikus rosszabb, mint a semmi. Amint el a valodi domain, ezt a harmat vissza kell tenni a helyes cimmel. --></head><body class="home js-ready is-ready is-loaded is-enter" style="overflow: auto;"><video id="hero-bg-video" data-pc="" data-mobile="" muted playsinline style="display:none!important;width:0;height:0"></video><div class="js-page-loading" style="position:fixed;width:0;height:0;overflow:hidden;opacity:0;pointer-events:none"><div class="js-page-loading_inner" id="js-page-loading_text"><span class="js-loading_text"></span></div><button id="js-page-loading_start" type="button"></button><div id="page-loading_logo"></div></div></div><header class="header js-header"><div class="header_logo js-header_logo"><a class="link-logo" aria-label="Home page" href="/" style="transform: translate(0px, 0px);"><img src="assets/images/max-ender.png" alt="MAX ENDER" class="logo-img"></a></div><div class="header_menu"><ul class="header_menu_list ul__reset"><li class="header_menu_item js-cursor-contract is-active"><a href="#about" class="desc text-uppercase has-tag-handle js-nav"><span class="header_menu_item_inner"><span class="header_menu_item_link header_menu_item_link__deep" data-hu="Nézőpont" data-en="Viewpoint">Nézőpont</span> <span class="header_menu_item_link header_menu_item_link__active" data-hu="Nézőpont" data-en="Viewpoint">Nézőpont</span></span></a></li><li class="header_menu_item js-cursor-contract"><a href="#work" class="desc text-uppercase has-tag-handle js-nav"><span class="header_menu_item_inner"><span class="header_menu_item_link header_menu_item_link__deep" data-hu="Zene" data-en="Music">Zene</span> <span class="header_menu_item_link header_menu_item_link__active" data-hu="Zene" data-en="Music">Zene</span></span></a></li><li class="header_menu_item js-cursor-contract"><a href="#video" class="desc text-uppercase has-tag-handle js-nav"><span class="header_menu_item_inner"><span class="header_menu_item_link header_menu_item_link__deep" data-hu="Világ" data-en="World">Világ</span> <span class="header_menu_item_link header_menu_item_link__active" data-hu="Világ" data-en="World">Világ</span></span></a></li><li class="header_menu_item js-cursor-contract"><a href="#contact" class="desc text-uppercase has-tag-handle js-nav"><span class="header_menu_item_inner"><span class="header_menu_item_link header_menu_item_link__deep" data-hu="Kapcsolat" data-en="Contact">Kapcsolat</span> <span class="header_menu_item_link header_menu_item_link__active" data-hu="Kapcsolat" data-en="Contact">Kapcsolat</span></span></a></li></ul><button type="button" class="lang-switch js-lang" data-hu="EN" data-en="HU">EN</button></div></header><main class="main-layer js-pageContent"><div class="layer layer__dark"><div class="container"><div id="about"><div class="hero" style="--pr-height: 842.125px;"><div class="hero_bg" data-lenis-parallax=".5" style="--offset-parallax: 0px;"><div class="w-100 h-100 js-anim--scale anim--fade is-handler is-anim-handler is-anim-completed" data-screen-offset="0.3" style=""><img id="hero-bg-image" src="assets/images/hero.png" alt="Magyar puszta, kopott used-future latvanyvilag"></div></div><div class="hero_content"><div class="row justify-content-center"><div class="col-lg-4 col-sm-8 col-12 hero_content_inner js-cursor-extend"><h6 class="text-center hero_content_inner_subtitle js-anim--lines--sim anim--lines only--line-mask is-handler is-anim-handler is-running" data-screen-offset="0.8"><img src="assets/images/mxndr-felirat.png" alt="MXNDR" class="wordmark-img"></h6><h1 class="text-center  mb-0 " data-screen-offset="0.6">Vannak érzések<br><strong>amikre<br>nincs szó</strong></h1></div></div></div></div><div class="about js-about" id="about"><div class="row about_me"><div class="col-lg-8 col-sm-10 col-12 offset-lg-2 offset-sm-1"><div class="about_content container_content js-cursor-extend"><h2 class="about_content_label body-text text-uppercase" data-hu="Nézőpont" data-en="Viewpoint">Nézőpont</h2><div class="about_content_desc h2 scroll-paragraph-parent"><div class="scroll-paragraph-mask is-masking"><p class="nezopont-blokk">A zene számomra ecset, a vászon<br><span class="szo-valt">a befogadóban</span> van. Lesznek<br>pillanatok, amikor pont ott<br>szólal meg, ahol <span class="szo-valt">valakinek</span><br>éppen <span class="szo-valt">hallania</span> kell.</p><p class="nezopont-blokk">Sokan ezekért a pillanatokért<br>hallgatunk zenét: hogy elinduljon<br><span class="szo-valt">bennünk</span> valami, hogy kimondja<br><span class="szo-valt">helyettünk</span> azt, amit nem <span class="szo-valt">tudtunk</span><br>szavakba önteni.</p></div></div><div class="scroll-paragraph-mask is-bg"><p class="nezopont-blokk">A zene számomra ecset, a vászon<br><span class="szo-valt">a befogadóban</span> van. Lesznek<br>pillanatok, amikor pont ott<br>szólal meg, ahol <span class="szo-valt">valakinek</span><br>éppen <span class="szo-valt">hallania</span> kell.</p><p class="nezopont-blokk">Sokan ezekért a pillanatokért<br>hallgatunk zenét: hogy elinduljon<br><span class="szo-valt">bennünk</span> valami, hogy kimondja<br><span class="szo-valt">helyettünk</span> azt, amit nem <span class="szo-valt">tudtunk</span><br>szavakba önteni.</p></div><p class="nezopont-idezet"><span class="nezopont-idezet_sor">„The curtain moves, I think it’s you”</span><span class="nezopont-idezet_dal">Smoke &amp; Vinyl</span></p></div></div></div></div></div></div></div><div id="work"><div class="work" id="work"><div class="work_history"><div class="row work_heading work_history_heading"><div class="col-lg-8 col-sm-10 offset-lg-2 offset-sm-1 col-12"><h2 class="work_content_label container_content body-text text-uppercase mb-0" data-hu="Zene" data-en="Music">Zene</h2></div></div><div class="heading-mask heading-mask__now"><div class="heading-mask_el container_content heading-mask_el__deep"><div class="row"><div class="col-sm-2 offset-lg-2 offset-sm-1 col-3"><div class="simple-masking"><div class="simple-masking_el"><span class="h3 mb-1">01</span></div></div></div><div class="col-lg-6 col-sm-8 col-9"><div class="simple-masking_el js-simple-masking_el js-cursor-contract"><h3 class="h3 mb-1">Mátra szele</h3><p class="mb-0 desc font-400">2026</p></div></div></div></div><div class="heading-mask_el container_content heading-mask_el__masking"><div class="row"><div class="col-sm-2 offset-lg-2 offset-sm-1 col-3"><div class="simple-masking"><div class="simple-masking_el"><span class="h3 mb-1 text-dark">01</span></div></div></div><div class="col-lg-6 col-sm-8 col-9"><div class="simple-masking_el"><p class="h3 mb-1 text-dark">Mátra szele</p><p class="mb-0 desc font-400 text-dark">2026</p></div></div></div></div></div><div class="heading-mask"><div class="heading-mask_el container_content heading-mask_el__deep"><div class="row"><div class="col-sm-2 offset-lg-2 offset-sm-1 col-3"><div class="simple-masking"><div class="simple-masking_el"><span class="h3 mb-1">02</span></div></div></div><div class="col-lg-6 col-sm-8 col-9"><div class="simple-masking_el js-simple-masking_el js-cursor-contract"><h3 class="h3 mb-1">Tequila</h3><p class="mb-0 desc font-400">2026</p></div></div></div></div><div class="heading-mask_el container_content heading-mask_el__masking"><div class="row"><div class="col-sm-2 offset-lg-2 offset-sm-1 col-3"><div class="simple-masking"><div class="simple-masking_el"><span class="h3 mb-1 text-dark">02</span></div></div></div><div class="col-lg-6 col-sm-8 col-9"><div class="simple-masking_el"><p class="h3 mb-1 text-dark">Tequila</p><p class="mb-0 desc font-400 text-dark">2026</p></div></div></div></div></div><div class="heading-mask"><div class="heading-mask_el container_content heading-mask_el__deep"><div class="row"><div class="col-sm-2 offset-lg-2 offset-sm-1 col-3"><div class="simple-masking"><div class="simple-masking_el"><span class="h3 mb-1">03</span></div></div></div><div class="col-lg-6 col-sm-8 col-9"><div class="simple-masking_el js-simple-masking_el js-cursor-contract"><h3 class="h3 mb-1">Play Again</h3><p class="mb-0 desc font-400">2025</p></div></div></div></div><div class="heading-mask_el container_content heading-mask_el__masking"><div class="row"><div class="col-sm-2 offset-lg-2 offset-sm-1 col-3"><div class="simple-masking"><div class="simple-masking_el"><span class="h3 mb-1 text-dark">03</span></div></div></div><div class="col-lg-6 col-sm-8 col-9"><div class="simple-masking_el"><p class="h3 mb-1 text-dark">Play Again</p><p class="mb-0 desc font-400 text-dark">2025</p></div></div></div></div></div><div class="heading-mask"><div class="heading-mask_el container_content heading-mask_el__deep"><div class="row"><div class="col-sm-2 offset-lg-2 offset-sm-1 col-3"><div class="simple-masking"><div class="simple-masking_el"><span class="h3 mb-1">04</span></div></div></div><div class="col-lg-6 col-sm-8 col-9"><div class="simple-masking_el js-simple-masking_el js-cursor-contract"><h3 class="h3 mb-1">Cím kell ide</h3><p class="mb-0 desc font-400">2025</p></div></div></div></div><div class="heading-mask_el container_content heading-mask_el__masking"><div class="row"><div class="col-sm-2 offset-lg-2 offset-sm-1 col-3"><div class="simple-masking"><div class="simple-masking_el"><span class="h3 mb-1 text-dark">04</span></div></div></div><div class="col-lg-6 col-sm-8 col-9"><div class="simple-masking_el"><p class="h3 mb-1 text-dark">Cím kell ide</p><p class="mb-0 desc font-400 text-dark">2025</p></div></div></div></div></div></div></div><div class="video" id="video"><div class="reel" id="video">
+  <video class="js-reel-bg reel__bg" src="assets/video/reel-loop.mp4" muted playsinline loop preload="metadata"></video>
+  <div class="reel__hit js-reel-open" role="button" tabindex="0" aria-label="Lejátszás"></div>
+  <div class="reel__cursor js-reel-cursor"><span data-hu="Lejátszás" data-en="Play">Lejátszás</span></div>
+</div></div></div><div class="contact container_content" id="contact"><div class="row"><div class="col-lg-8 col-sm-10 col-12 offset-lg-2 offset-sm-1"><h2 class="contact_label body-text text-uppercase" data-hu="Kapcsolat" data-en="Contact">Kapcsolat</h2></div></div><div class="row"><div class="col-lg-3 col-sm-5 offset-lg-2 offset-sm-1 col-12"><ul class="ul__reset"><li class="heading-mask social-link js-cursor-contract heading-mask__now h3"><div class="heading-mask_el heading-mask_el__deep"><a href="https://open.spotify.com/" class="contact_link" target="_blank" data-hu="Spotify" data-en="Spotify">Spotify</a></div><div class="heading-mask_el heading-mask_el__masking"><a href="https://open.spotify.com/" class="text-dark contact_link" target="_blank" data-hu="A teljes katalógus" data-en="The full catalogue">A teljes katalógus</a></div></li><li class="heading-mask social-link js-cursor-contract heading-mask__now h3"><div class="heading-mask_el heading-mask_el__deep"><a href="https://www.youtube.com/@mxndr" class="contact_link" target="_blank" data-hu="YouTube" data-en="YouTube">YouTube</a></div><div class="heading-mask_el heading-mask_el__masking"><a href="https://www.youtube.com/@mxndr" class="text-dark contact_link" target="_blank" data-hu="Klipek" data-en="Videos">Klipek</a></div></li><li class="heading-mask social-link js-cursor-contract heading-mask__now h3"><div class="heading-mask_el heading-mask_el__deep"><a href="https://www.instagram.com/mxndr.music" class="contact_link" target="_blank" data-hu="Instagram" data-en="Instagram">Instagram</a></div><div class="heading-mask_el heading-mask_el__masking"><a href="https://www.instagram.com/mxndr.music" class="text-dark contact_link" target="_blank" data-hu="Napi kép" data-en="Daily picture">Napi kép</a></div></li></ul></div><div class="col-lg-3 col-sm-5 col-12"><ul class="ul__reset"><li class="heading-mask social-link js-cursor-contract heading-mask__now h3"><div class="heading-mask_el heading-mask_el__deep"><a href="https://www.tiktok.com/@mxndr.music" class="contact_link" target="_blank" data-hu="TikTok" data-en="TikTok">TikTok</a></div><div class="heading-mask_el heading-mask_el__masking"><a href="https://www.tiktok.com/@mxndr.music" class="text-dark contact_link" target="_blank" data-hu="Rövid videó" data-en="Short video">Rövid videó</a></div></li><li class="heading-mask social-link js-cursor-contract heading-mask__now h3"><div class="heading-mask_el heading-mask_el__deep"><a href="https://music.apple.com/" class="contact_link" target="_blank" data-hu="Apple Music" data-en="Apple Music">Apple Music</a></div><div class="heading-mask_el heading-mask_el__masking"><a href="https://music.apple.com/" class="text-dark contact_link" target="_blank" data-hu="Ugyanaz, máshol" data-en="Same, elsewhere">Ugyanaz, máshol</a></div></li><li class="heading-mask social-link js-cursor-contract heading-mask__now h3"><div class="heading-mask_el heading-mask_el__deep"><a href="https://linktr.ee/mxndr" class="contact_link" target="_blank" data-hu="Linktree" data-en="Linktree">Linktree</a></div><div class="heading-mask_el heading-mask_el__masking"><a href="https://linktr.ee/mxndr" class="text-dark contact_link" target="_blank" data-hu="Minden link" data-en="Every link">Minden link</a></div></li></ul></div><div class="col-lg-3 col-12 contact_content"><div class="row"><div class="col-lg-12 col-sm-5 offset-lg-0 offset-sm-1 col-12"><div class="heading-mask contact_info contact_info__top js-cursor-contract heading-mask__now"><div class="heading-mask_el heading-mask_el__deep"><span class="h4 d-block" data-hu="E-mail" data-en="Email">E-mail</span> <a class="sub-content" href="mailto:info@mxndr.com">info@mxndr.com</a></div><div class="heading-mask_el heading-mask_el__masking"><span class="h4 d-block text-dark" data-hu="Mindet elolvasom" data-en="I read every one">Mindet elolvasom</span> <a class="sub-content text-dark" href="mailto:info@mxndr.com">info@mxndr.com</a></div></div></div><div class="col-lg-12 col-sm-5 col-12"><div class="heading-mask contact_info js-cursor-contract heading-mask__now"><div class="heading-mask_el heading-mask_el__deep"><span class="h4 d-block" data-hu="Gyűjtőlap" data-en="All platforms">Gyűjtőlap</span> <a class="sub-content" href="tel:linktr.ee/mxndr">linktr.ee/mxndr</a></div><div class="heading-mask_el heading-mask_el__masking"><span class="h4 d-block text-dark" data-hu="Minden platform egy helyen" data-en="Everything in one place">Minden platform egy helyen</span> <a class="sub-content text-dark" href="tel:linktr.ee/mxndr">linktr.ee/mxndr</a></div></div></div></div></div></div></div></div></div><div class="frame-mobile"></div><button id="js-btn_clipPath" class="btn_clipPath"><span class="btn_clipPath_inner"><span class="btn_clipPath_image btn_clipPath_image__ring"><img src="assets/icons/ic-text-ring.svg" alt="ic-text-ring"> </span><span class="btn_clipPath_image btn_clipPath_image__touch"><img src="assets/icons/ic-touch.svg" alt="ic-touch"></span></span></button></div><div class="layer layer__red js-masker" style="--size: 375px; --x: 719px; --y: 503px;"><div class="container"><div class="hero hero__red"><div class="hero_content"><div class="row justify-content-center"><div class="col-lg-4 col-sm-8 col-12 hero_content_inner"><span class="text-center h6 hero_content_inner_subtitle text-dark"><img src="assets/images/max-ender.png" alt="MAX ENDER" class="wordmark-img wordmark-img--alt"></span><h1 class="text-center text-dark  mb-0 " data-screen-offset="0.6">Vannak érzések<br><strong>amikre<br>van zene</strong></h1></div></div></div></div><div class="about about__red"><div class="row about_me"><div class="col-lg-8 col-sm-10 col-12 offset-lg-2 offset-sm-1"><div class="about_content container_content"><p class="about_content_label body-text text-uppercase text-dark" data-hu="Nézőpont" data-en="Viewpoint">Nézőpont</p><div class="about_content_desc h2"><div class="scroll-paragraph-mask text-dark"><p class="nezopont-blokk">A zene számomra ecset, a vászon<br><span class="szo-valt-piros">benned</span> van. Lesznek<br>pillanatok, amikor pont ott<br>szólal meg, ahol <span class="szo-valt-piros">neked</span><br>éppen <span class="szo-valt-piros">hallanod</span> kell.</p><p class="nezopont-blokk">Sokan ezekért a pillanatokért<br>hallgatunk zenét: hogy elinduljon<br><span class="szo-valt-piros">benned</span> valami, hogy kimondja<br><span class="szo-valt-piros">helyetted</span> azt, amit nem <span class="szo-valt-piros">tudtál</span><br>szavakba önteni.</p></div></div></div></div></div></div><div class="work work__red"><div class="work_history op-0"><div class="row work_heading work_history_heading"><div class="col-lg-8 col-sm-10 offset-lg-2 offset-sm-1 col-12"><p class="work_content_label body-text text-uppercase container_content mb-0 text-dark" data-hu="Zene" data-en="Music">Zene</p></div></div><div class="heading-mask heading-mask__now"><div class="heading-mask_el container_content heading-mask_el__deep"><div class="row"><div class="col-sm-2 offset-lg-2 offset-sm-1 col-3"><div class="simple-masking"><div class="simple-masking_el"><span class="h3 mb-1 text-dark">01</span></div></div></div><div class="col-lg-6 col-sm-8 col-9"><div class="simple-masking_el"><p class="h3 mb-1 text-dark">Mátra szele</p><p class="mb-0 desc font-400 text-dark">2026</p></div></div></div></div><div class="heading-mask_el container_content heading-mask_el__masking"><div class="row"><div class="col-sm-2 offset-lg-2 offset-sm-1 col-3"><div class="simple-masking"><div class="simple-masking_el"><span class="h3 mb-1 text-dark">01</span></div></div></div><div class="col-lg-6 col-sm-8 col-9"><div class="simple-masking_el"><p class="h3 mb-1 text-dark">Mátra szele</p><p class="mb-0 desc font-400 text-dark">2026</p></div></div></div></div></div><div class="heading-mask"><div class="heading-mask_el container_content heading-mask_el__deep"><div class="row"><div class="col-sm-2 offset-lg-2 offset-sm-1 col-3"><div class="simple-masking"><div class="simple-masking_el"><span class="h3 mb-1 text-dark">02</span></div></div></div><div class="col-lg-6 col-sm-8 col-9"><div class="simple-masking_el"><p class="h3 mb-1 text-dark">Tequila</p><p class="mb-0 desc font-400 text-dark">2026</p></div></div></div></div><div class="heading-mask_el container_content heading-mask_el__masking"><div class="row"><div class="col-sm-2 offset-lg-2 offset-sm-1 col-3"><div class="simple-masking"><div class="simple-masking_el"><span class="h3 mb-1 text-dark">02</span></div></div></div><div class="col-lg-6 col-sm-8 col-9"><div class="simple-masking_el"><p class="h3 mb-1 text-dark">Tequila</p><p class="mb-0 desc font-400 text-dark">2026</p></div></div></div></div></div><div class="heading-mask"><div class="heading-mask_el container_content heading-mask_el__deep"><div class="row"><div class="col-sm-2 offset-lg-2 offset-sm-1 col-3"><div class="simple-masking"><div class="simple-masking_el"><span class="h3 mb-1 text-dark">03</span></div></div></div><div class="col-lg-6 col-sm-8 col-9"><div class="simple-masking_el"><p class="h3 mb-1 text-dark">Play Again</p><p class="mb-0 desc font-400 text-dark">2025</p></div></div></div></div><div class="heading-mask_el container_content heading-mask_el__masking"><div class="row"><div class="col-sm-2 offset-lg-2 offset-sm-1 col-3"><div class="simple-masking"><div class="simple-masking_el"><span class="h3 mb-1 text-dark">03</span></div></div></div><div class="col-lg-6 col-sm-8 col-9"><div class="simple-masking_el"><p class="h3 mb-1 text-dark">Play Again</p><p class="mb-0 desc font-400 text-dark">2025</p></div></div></div></div></div><div class="heading-mask"><div class="heading-mask_el container_content heading-mask_el__deep"><div class="row"><div class="col-sm-2 offset-lg-2 offset-sm-1 col-3"><div class="simple-masking"><div class="simple-masking_el"><span class="h3 mb-1 text-dark">04</span></div></div></div><div class="col-lg-6 col-sm-8 col-9"><div class="simple-masking_el"><p class="h3 mb-1 text-dark">Cím kell ide</p><p class="mb-0 desc font-400 text-dark">2025</p></div></div></div></div><div class="heading-mask_el container_content heading-mask_el__masking"><div class="row"><div class="col-sm-2 offset-lg-2 offset-sm-1 col-3"><div class="simple-masking"><div class="simple-masking_el"><span class="h3 mb-1 text-dark">04</span></div></div></div><div class="col-lg-6 col-sm-8 col-9"><div class="simple-masking_el"><p class="h3 mb-1 text-dark">Cím kell ide</p><p class="mb-0 desc font-400 text-dark">2025</p></div></div></div></div></div></div></div><div class="video video__red"><div class="reel reel--red"><div class="reel__bg reel__bg--flat"></div></div></div><span class="vj-cursor js-vj-cursor vj-cursor__red label_sample" style="--x: 718.996px; --y: 502.996px; --opacity: 0;"><span><span class="d-block">A</span> <span class="d-block">VILÁG</span></span></span><div class="contact contact__red container_content op-0"><div class="row"><div class="col-lg-8 col-sm-10 col-12 offset-lg-2 offset-sm-1"><p class="contact_label body-text text-uppercase text-dark" data-hu="Kapcsolat" data-en="Contact">Kapcsolat</p></div></div><div class="row"><div class="col-lg-3 col-sm-5 offset-lg-2 offset-sm-1 col-12"><ul class="ul__reset"><li class="heading-mask social-link js-cursor-contract heading-mask__now h3"><a href="https://open.spotify.com/" class="text-dark contact_link" target="_blank" data-hu="A teljes katalógus" data-en="The full catalogue">A teljes katalógus</a></li><li class="heading-mask social-link js-cursor-contract heading-mask__now h3"><a href="https://www.youtube.com/@mxndr" class="text-dark contact_link" target="_blank" data-hu="Klipek" data-en="Videos">Klipek</a></li><li class="heading-mask social-link js-cursor-contract heading-mask__now h3"><a href="https://www.instagram.com/mxndr.music" class="text-dark contact_link" target="_blank" data-hu="Napi kép" data-en="Daily picture">Napi kép</a></li></ul></div><div class="col-lg-3 col-sm-5 col-12"><ul class="ul__reset"><li class="heading-mask social-link js-cursor-contract heading-mask__now h3"><a href="https://www.tiktok.com/@mxndr.music" class="text-dark contact_link" target="_blank" data-hu="Rövid videó" data-en="Short video">Rövid videó</a></li><li class="heading-mask social-link js-cursor-contract heading-mask__now h3"><a href="https://music.apple.com/" class="text-dark contact_link" target="_blank" data-hu="Ugyanaz, máshol" data-en="Same, elsewhere">Ugyanaz, máshol</a></li><li class="heading-mask social-link js-cursor-contract heading-mask__now h3"><a href="https://linktr.ee/mxndr" class="text-dark contact_link" target="_blank" data-hu="Minden link" data-en="Every link">Minden link</a></li></ul></div><div class="col-lg-3 col-12 contact_content"><div class="row"><div class="col-lg-12 col-sm-5 offset-lg-0 offset-sm-1 col-12"><div class="heading-mask contact_info contact_info__red contact_info__top js-cursor-contract heading-mask__now"><span class="h4 d-block text-dark" data-hu="Mindet elolvasom" data-en="I read every one">Mindet elolvasom</span> <a class="sub-content text-dark" href="mailto:info@mxndr.com">info@mxndr.com</a></div></div><div class="col-lg-12 col-sm-5 col-12"><div class="heading-mask contact_info contact_info__red js-cursor-contract heading-mask__now"><span class="h4 d-block text-dark" data-hu="Minden platform egy helyen" data-en="Everything in one place">Minden platform egy helyen</span> <a class="sub-content text-dark" href="tel:linktr.ee/mxndr">linktr.ee/mxndr</a></div></div></div></div></div></div></div></div></main><footer id="js-footer" class="footer"><ul class="footer_socials ul__reset"><li class="social js-social"><a class="social_link social_link__dribbble" href="https://open.spotify.com/" target="_blank" aria-label="Visit my Dribbble profile" style="transform: translate(0px, 0px);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="svg" viewbox_="0 0 NaN NaN">
+<path d="M16.5781 12.5693C16.6822 14.7607 17.625 16.7336 19.1013 18.1693C20.415 16.6534 21.2417 14.7057 21.3334 12.5693H16.5781Z" fill="#B7AB98"></path>
+<path d="M12.5703 11.7719H15.7707C15.8748 9.35122 16.9216 7.17217 18.5523 5.59053C16.989 4.07429 14.8905 3.1084 12.5703 3.0083V11.7719Z" fill="#B7AB98"></path>
+<path d="M3.00879 12.5693C3.10091 14.7057 3.92723 16.6534 5.24087 18.1693C6.71723 16.734 7.66 14.7607 7.76408 12.5693H3.00879Z" fill="#B7AB98"></path>
+<path d="M16.5781 11.7723H21.3334C21.2413 9.63594 20.415 7.6882 19.1013 6.17236C17.625 7.60804 16.6818 9.58091 16.5781 11.7723Z" fill="#B7AB98"></path>
+<path d="M8.57167 11.7719H11.772V3.0083C9.45182 3.1084 7.35334 4.07429 5.79004 5.59053C7.42073 7.17217 8.46758 9.35122 8.57167 11.7719Z" fill="#B7AB98"></path>
+<path d="M15.7707 12.5693H12.5703V21.333C14.8905 21.2333 16.989 20.267 18.5523 18.7507C16.9216 17.1691 15.8748 14.9901 15.7707 12.5693Z" fill="#B7AB98"></path>
+<path d="M7.76408 11.7723C7.66 9.58091 6.71723 7.60804 5.24087 6.17236C3.92723 7.6882 3.10091 9.63594 3.00879 11.7723H7.76408Z" fill="#B7AB98"></path>
+<path d="M11.772 12.5693H8.57167C8.46758 14.9901 7.42073 17.1691 5.79004 18.7507C7.35334 20.267 9.45182 21.2329 11.772 21.333V12.5693Z" fill="#B7AB98"></path>
+</svg></a></li><li class="social js-social"><a class="social_link social_link__instagram" href="https://www.tiktok.com/@mxndr.music" target="_blank" aria-label="Visit my Instagram profile" style="transform: translate(0px, 0px);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="svg" viewbox_="0 0 NaN NaN">
+<path d="M17.0912 2.6665H6.90942C6.35229 2.6665 5.80063 2.77624 5.28591 2.98944C4.7712 3.20264 4.30351 3.51514 3.90957 3.90908C3.11396 4.70469 2.66699 5.78377 2.66699 6.90893V17.0907C2.66699 17.6479 2.77673 18.1995 2.98993 18.7143C3.20313 19.229 3.51562 19.6966 3.90957 20.0906C4.70518 20.8862 5.78426 21.3332 6.90942 21.3332H17.0912C17.6484 21.3332 18.2 21.2234 18.7147 21.0102C19.2295 20.797 19.6971 20.4845 20.0911 20.0906C20.485 19.6966 20.7975 19.229 21.0107 18.7143C21.2239 18.1995 21.3337 17.6479 21.3337 17.0907V6.90893C21.3337 6.3518 21.2239 5.80014 21.0107 5.28542C20.7975 4.77071 20.485 4.30303 20.0911 3.90908C19.6971 3.51514 19.2295 3.20264 18.7147 2.98944C18.2 2.77624 17.6484 2.6665 17.0912 2.6665ZM6.06093 6.90893C5.89312 6.90893 5.72907 6.85917 5.58954 6.76593C5.45001 6.6727 5.34125 6.54018 5.27703 6.38514C5.21281 6.2301 5.19601 6.0595 5.22875 5.89491C5.26149 5.73032 5.3423 5.57914 5.46096 5.46047C5.57962 5.34181 5.73081 5.261 5.8954 5.22826C6.05999 5.19552 6.23059 5.21233 6.38563 5.27655C6.54067 5.34076 6.67319 5.44952 6.76642 5.58905C6.85965 5.72858 6.90942 5.89263 6.90942 6.06044C6.90942 6.28548 6.82002 6.50129 6.6609 6.66041C6.50178 6.81953 6.28596 6.90893 6.06093 6.90893ZM12.0003 17.0907C10.9934 17.0907 10.0092 16.7922 9.17197 16.2328C8.33477 15.6734 7.68226 14.8783 7.29694 13.948C6.91162 13.0178 6.8108 11.9942 7.00724 11.0066C7.20367 10.0191 7.68853 9.112 8.40051 8.40002C9.11249 7.68804 10.0196 7.20318 11.0071 7.00675C11.9947 6.81031 13.0183 6.91113 13.9485 7.29645C14.8788 7.68177 15.6739 8.33428 16.2333 9.17148C16.7927 10.0087 17.0912 10.993 17.0912 11.9998C17.0912 13.35 16.5549 14.6449 15.6001 15.5997C14.6454 16.5544 13.3505 17.0907 12.0003 17.0907Z" fill="#B7AB98"></path>
+</svg></a></li><li class="social js-social"><a class="social_link social_link__youtube" href="https://www.youtube.com/@mxndr" target="_blank" aria-label="Visit my YouTube channel" style="transform: translate(0px, 0px);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="svg" viewbox_="0 0 NaN NaN">
+<path d="M19.2611 11.3279L6.57538 3.39932C6.45536 3.32431 6.31745 3.2828 6.17597 3.27908C6.03449 3.27537 5.8946 3.30959 5.77081 3.3782C5.64702 3.44681 5.54386 3.5473 5.47202 3.66924C5.40019 3.79119 5.3623 3.93014 5.3623 4.07167V19.9288C5.3623 20.0703 5.40019 20.2093 5.47202 20.3312C5.54386 20.4532 5.64702 20.5536 5.77081 20.6223C5.8946 20.6909 6.03449 20.7251 6.17597 20.7214C6.31745 20.7177 6.45536 20.6761 6.57538 20.6011L19.2611 12.6726C19.3758 12.6015 19.4705 12.5022 19.5361 12.3843C19.6018 12.2664 19.6363 12.1336 19.6363 11.9986C19.6363 11.8637 19.6018 11.7309 19.5361 11.613C19.4705 11.495 19.3758 11.3958 19.2611 11.3247V11.3279Z" fill="#B7AB98"></path>
+</svg></a></li><li class="social js-social"><a class="social_link social_link__linkedin" href="https://www.instagram.com/mxndr.music" target="_blank" aria-label="Visit my LinkedIn profile" style="transform: translate(0px, 0px);"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" class="svg" viewbox_="0 0 NaN NaN">
+<path d="M7.02814 19.8291H3.44995V8.07215H7.13038V19.8291H7.02814ZM5.18793 6.43641C4.06336 6.43641 3.04102 5.5163 3.04102 4.28949C3.04102 3.16492 3.96112 2.14258 5.18793 2.14258C6.31251 2.14258 7.33485 3.06268 7.33485 4.28949C7.33485 5.5163 6.41474 6.43641 5.18793 6.43641ZM20.7275 19.8291H17.0471V14.104C17.0471 12.7749 17.0471 11.0369 15.2069 11.0369C13.2644 11.0369 13.06 12.4682 13.06 14.0017V19.8291H9.37953V8.07215H12.8555V9.7079C13.3667 8.78779 14.4912 7.86769 16.3314 7.86769C20.0119 7.86769 20.7275 10.3213 20.7275 13.4906V19.8291Z" fill="#B7AB98"></path>
+</svg></a></li></ul><button class="footer_sound js-cursor-contract js-footer_sound desc text-uppercase btn-clear"><span class="footer_sound_label">Sound</span> <span class="footer_sound_list"><span class="footer_sound_list_item js-footer_sound_list_item__on" style="translate: none; rotate: none; scale: none; transform: translate(0px, 0%);">On</span> <span class="footer_sound_list_item js-footer_sound_list_item__off" style="translate: none; rotate: none; scale: none; transform: translate(0px, -100%);">Off</span></span></button></footer><audio loop="" class="js-web-sound" src="../../assets/mp3/audio-site.mp3"></audio><canvas data-engine="three.js r137" width="1640" height="1100" class="three-app" style="display: block; width: 1640px; height: 1100px;"></canvas><div id="layout-resize"></div><script>window.addEventListener("load",function(){var t=0,i=setInterval(function(){var b=document.getElementById("js-page-loading_start");if(b){b.click();} if(!document.body.classList.contains("is-loading")||++t>40){clearInterval(i);document.body.classList.remove("is-loading");}},150);});</script><script>
+/* A referencia sima-gorgetese (Lenis) leallitva jon letre, es a betolto-szekvencia
+   inditana el. Az a szekvencia nalunk nem fut vegig (kivettuk a belepo-kaput),
+   ezert a gorgetes beragadt: merve 800 kepponyi gorgo 48 kepppontot mozgatott.
+   Itt magunk inditjuk el es magunk hajtjuk a kepkocka-ciklusat.
+   NE a touch-detektort kapcsold ki helyette: az a kurzor-kort is megoli. */
+(function(){
+  var started=false, tries=0;
+  var iv=setInterval(function(){
+    var L=window.__lenis;
+    if(L){
+      if(!started){ try{ L.start(); }catch(e){}
+        (function raf(t){ try{ L.raf(t); }catch(e){} requestAnimationFrame(raf); })(performance.now());
+        started=true;
+      }
+      clearInterval(iv);
+    }
+    if(++tries>60) clearInterval(iv);
+  },100);
+})();
+</script><div class="reel-modal" id="reelModal">
+  <button type="button" class="reel-modal__close js-reel-close" data-hu="Bezár" data-en="Close">Bezár</button>
+  <div class="reel-modal__frame" id="reelFrame"></div>
+</div><script>
+/* ---------- menu-horgonyok (a sima gorgeteshez kotve) ---------- */
+document.querySelectorAll('a.js-nav').forEach(function(a){
+  a.addEventListener('click', function(e){
+    var id=a.getAttribute('href'); if(!id||id.charAt(0)!=='#') return;
+    var t=document.querySelector('.layer__dark '+id) || document.querySelector(id);
+    if(!t) return;
+    e.preventDefault();
+    if(window.__lenis && window.__lenis.scrollTo){ window.__lenis.scrollTo(t,{offset:-40}); }
+    else { window.scrollTo({top:t.getBoundingClientRect().top+window.scrollY-40, behavior:'smooth'}); }
+  });
+});
+
+/* ---------- nyelvvalto ---------- */
+(function(){
+  var lang = 'hu';
+  try{ lang = localStorage.getItem('mxndr-lang') || 'hu'; }catch(e){}
+  function apply(l){
+    document.querySelectorAll('[data-hu][data-en]').forEach(function(el){
+      var v = el.getAttribute(l==='hu' ? 'data-hu' : 'data-en');
+      if(v!==null) el.textContent = v;
+    });
+    document.documentElement.setAttribute('lang', l);
+    try{ localStorage.setItem('mxndr-lang', l); }catch(e){}
+    lang = l;
+  }
+  apply(lang);
+  document.querySelectorAll('.js-lang').forEach(function(b){
+    b.addEventListener('click', function(){ apply(lang==='hu' ? 'en' : 'hu'); });
+  });
+})();
+
+/* ---------- reel: nemán indul lathatosagra, kattintasra teljes kepernyo hanggal ---------- */
+(function(){
+  var reel=document.querySelector('.reel'); if(!reel) return;
+  var bg=reel.querySelector('.js-reel-bg');
+  var hit=reel.querySelector('.js-reel-open');
+  var cur=reel.querySelector('.js-reel-cursor');
+  var modal=document.getElementById('reelModal');
+
+  if(bg && 'IntersectionObserver' in window){
+    new IntersectionObserver(function(es){
+      es.forEach(function(en){
+        if(en.isIntersecting){ bg.play().catch(function(){}); }
+        else { bg.pause(); }
+      });
+    },{threshold:.25}).observe(reel);
+  }
+
+  if(hit && cur){
+    hit.addEventListener('mouseenter', function(){ reel.classList.add('is-hover'); });
+    hit.addEventListener('mouseleave', function(){ reel.classList.remove('is-hover'); });
+    hit.addEventListener('mousemove', function(e){
+      var r=reel.getBoundingClientRect();
+      cur.style.transform='translate('+(e.clientX-r.left)+'px,'+(e.clientY-r.top)+'px)'+(reel.classList.contains('is-hover')?' scale(1)':' scale(.4)');
+    }, {passive:true});
+  }
+
+  var YT_ID='VUJ2RLMHDAs';
+  var frame=document.getElementById('reelFrame');
+  function open(){
+    if(!modal||!frame) return;
+    modal.classList.add('is-open');
+    frame.innerHTML='<iframe src="https://www.youtube-nocookie.com/embed/'+YT_ID+'?autoplay=1&rel=0&modestbranding=1&playsinline=1" allow="autoplay; encrypted-media; fullscreen" allowfullscreen></iframe>';
+    if(bg) bg.pause();
+    if(window.__lenis && window.__lenis.stop) window.__lenis.stop();
+    document.body.style.overflow='hidden';
+  }
+  function close(){
+    if(!modal||!frame) return;
+    modal.classList.remove('is-open');
+    frame.innerHTML='';
+    if(window.__lenis && window.__lenis.start) window.__lenis.start();
+    document.body.style.overflow='';
+    if(bg) bg.play().catch(function(){});
+  }
+  if(hit){
+    hit.addEventListener('click', open);
+    hit.addEventListener('keydown', function(e){ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); open(); } });
+  }
+  var cb=document.querySelector('.js-reel-close'); if(cb) cb.addEventListener('click', close);
+  document.addEventListener('keydown', function(e){ if(e.key==='Escape') close(); });
+})();
+</script></body></html>

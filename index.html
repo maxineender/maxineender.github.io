@@ -205,6 +205,15 @@ html, body{ max-width:100%; overflow-x:hidden; }
 .szo-valt, .szo-valt-piros{ font-size: inherit !important; line-height: inherit !important; }
 .szo-valt{ color: #BA4F44; }        /* sotet retegen a markajel akcentus */
 .szo-valt-piros{ color: #0E050A; }  /* piros hatteren sotet, mert az akcentus a sajat hattere */
+/* SZETESO SOROK (2026-09-29, Ender iPhone-os kepe): a Nezopont bekezdes soraiba a motor
+   sorra-bonto szkriptje (ha fut) belso elemeket tesz, es azok a ".scroll-paragraph-mask *
+   { font-size:5rem !important }" szabalyt kapjak: a szoveg kicsi marad, de minden sor a nagy
+   betumeret sormagassagat foglalja, igy a sorok szetesnek. A bekezdes MINDEN leszarmazottja
+   ugyanazt a meretet kapja, erosebb szelektorral. Asztali gepen ez ugyanaz az ertek, mint eddig. */
+html body .about_content_desc .nezopont-blokk,
+html body .about_content_desc .nezopont-blokk *{
+  font-size: min(4.5rem, 4.1vw) !important; line-height: 1.2 !important;
+}
 .nezopont-idezet{ margin-top: 2.4rem; font-size: .95rem; line-height: 1.6; opacity: .75; }
 .nezopont-idezet_dal{ display:block; margin-top:.35rem; font-size:.8rem; letter-spacing:.08em;
   text-transform: uppercase; opacity:.6; }

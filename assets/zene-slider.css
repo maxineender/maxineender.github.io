@@ -1,0 +1,93 @@
+/* ---------- Zene: borito-korhinta + lejatszo (2026-10-18) ----------
+   Elrendezes-otlet: ecemgo "Music Player with Slider" (CodePen). A kod sajat,
+   a korhinta a Swiper 11 (MIT), helyben: assets/vendor/.
+   A sotet retegben el, z-index 6-on, mint a video: a piros reteg maszk-kore
+   (z-index 5) kulonben rafestene. A piros retegben ugyanakkora ures hely all
+   (.zene-spacer), a magassagat a zene-slider.js tartja szinkronban. */
+
+.zene{
+  position:relative; z-index:6;
+  /* Alul 7rem: a piros reteg Zene-blokkja a parallax miatt kb. 80-95 px-szel feljebb
+     ul, mint a sotet; ennyi hely kell, hogy a gombok alatt is piros legyen a hatter. */
+  padding-block:2.5rem 7rem;
+  color:var(--text,#DCECE0);
+  font-family:"Jost",sans-serif;
+}
+.zene-spacer{ display:block; width:100%; }
+/* A .work_history parallaxa transform-ot kap, az uj retegzesi kontextust nyit, es a
+   .zene z-indexe benne ragad: a piros reteg (z-index 5) ugy is rafest, telefonon a
+   PRESS gomb nyomva tartasakor az egesz lejatszot eltakarja (Ender, 2026-10-19).
+   Ezert a sotet reteg teljes Zene-blokkja kerul a piros fole; alatta a piros
+   hatter latszik, a lejatszo marad. */
+.work_history:has(.js-zene){ position:relative; z-index:6; }
+/* Piros hatteren a piros fo-gomb eltunne. */
+.is-red .zene__btn--main{ background:#0D0106; color:#DCECE0; }
+.is-red .zene__progress{ background:linear-gradient(to right, #0D0106 var(--p,0%), rgba(13,1,6,.25) var(--p,0%)); }
+
+.zene__swiper{ width:100%; padding-block:1.5rem 4.5rem; overflow:hidden; }
+.zene__slide{
+  width:15rem; max-width:62vw; aspect-ratio:1/1;
+  border-radius:.5rem; cursor:pointer; user-select:none;
+}
+.zene__slide img{
+  display:block; width:100%; height:100%; object-fit:cover;
+  border-radius:inherit; pointer-events:none;
+  -webkit-box-reflect:below 4px linear-gradient(transparent 25%, rgba(13,1,6,.5));
+}
+.zene__slide:not(.swiper-slide-active) img{ filter:brightness(.55) saturate(.8); transition:filter .4s ease; }
+.zene__slide.swiper-slide-active img{ filter:none; }
+
+.zene__player{
+  display:flex; flex-direction:column; align-items:center;
+  width:100%; max-width:24rem; margin-inline:auto; text-align:center;
+}
+.zene .zene__title{
+  margin:0; font-family:"Jost",sans-serif; font-weight:600;
+  font-size:1.6rem; line-height:1.25; letter-spacing:-.01em; color:inherit;
+}
+.zene__meta{
+  margin:.35rem 0 0; font-size:.8rem; letter-spacing:.14em;
+  text-transform:uppercase; opacity:.6;
+}
+
+.zene__progress{
+  -webkit-appearance:none; appearance:none;
+  width:100%; height:4px; margin:1.6rem 0 1.2rem; padding:0;
+  border-radius:2px; cursor:pointer;
+  background:linear-gradient(to right, var(--accent,#D2504A) var(--p,0%), rgba(220,236,224,.22) var(--p,0%));
+}
+.zene__progress::-webkit-slider-thumb{
+  -webkit-appearance:none; appearance:none;
+  width:14px; height:14px; border-radius:50%; border:0;
+  background:#DCECE0;
+}
+.zene__progress::-moz-range-thumb{ width:14px; height:14px; border-radius:50%; border:0; background:#DCECE0; }
+.zene__progress:focus-visible{ outline:2px solid var(--accent,#D2504A); outline-offset:4px; }
+
+.zene__controls{ display:flex; align-items:center; justify-content:center; gap:1.4rem; }
+.zene__btn{
+  all:unset; box-sizing:border-box; cursor:pointer;
+  display:flex; align-items:center; justify-content:center;
+  width:3rem; height:3rem; border-radius:50%;
+  color:#DCECE0; border:1px solid rgba(220,236,224,.3);
+  transition:transform .2s ease, background-color .2s ease;
+}
+.zene__btn svg{ width:1.05rem; height:1.05rem; fill:currentColor; }
+.zene__btn:hover{ background:rgba(220,236,224,.08); }
+.zene__btn:active{ transform:scale(.94); }
+.zene__btn:focus-visible{ outline:2px solid var(--accent,#D2504A); outline-offset:3px; }
+.zene__btn--main{
+  width:4rem; height:4rem; border:0;
+  background:var(--accent,#D2504A); color:#0D0106;
+}
+.zene__btn--main:hover{ background:var(--accent,#D2504A); filter:brightness(1.08); }
+.zene__btn--main svg{ width:1.35rem; height:1.35rem; }
+.zene__btn .zene__ic-pause{ display:none; }
+.zene.is-playing .zene__btn--main .zene__ic-play{ display:none; }
+.zene.is-playing .zene__btn--main .zene__ic-pause{ display:block; }
+
+@media (max-width:575px){
+  .zene__slide{ width:11rem; }
+  .zene .zene__title{ font-size:1.35rem; }
+  .zene__swiper{ padding-block:1rem 3.5rem; }
+}

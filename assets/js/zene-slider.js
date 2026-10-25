@@ -98,8 +98,16 @@
     else swiper.slideTo(0);
   });
 
-  audio.addEventListener('play', function(){ setPlaying(true); });
+  // Only one sound at a time: a preview silences the footer site sound (through its own
+  // button, so its On/Off state stays right), and turning the site sound on stops the preview.
+  var siteSound = document.querySelector('.js-web-sound');
+  var siteBtn = document.querySelector('.js-footer_sound');
+  audio.addEventListener('play', function(){
+    setPlaying(true);
+    if(siteSound && siteBtn && !siteSound.paused) siteBtn.click();
+  });
   audio.addEventListener('pause', function(){ setPlaying(false); });
+  if(siteSound) siteSound.addEventListener('play', function(){ if(!audio.paused) audio.pause(); });
   audio.addEventListener('timeupdate', paintProgress);
   audio.addEventListener('loadedmetadata', paintProgress);
   audio.addEventListener('ended', function(){

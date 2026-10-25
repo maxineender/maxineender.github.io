@@ -111,6 +111,12 @@
     color: var(--ink-dim); margin-right: -.34em;
     transition: color .6s var(--ease), opacity .6s var(--ease);
   }
+  /* A small dedication under the title: shows for ten seconds, then fades out for good. */
+  .dedication {
+    margin-top: -1rem; font-size: .75rem; font-weight: 400; letter-spacing: .2em;
+    color: var(--ink-dim); animation: dedication 10s linear forwards;
+  }
+  @keyframes dedication { 0%, 85% { opacity: 1; } 100% { opacity: 0; } }
   .play:hover .ring, .play:focus-visible .ring { border-color: var(--accent); }
   .play:hover .hint, .play:focus-visible .hint { color: var(--accent); }
   .play:focus-visible { outline: none; }
@@ -234,6 +240,7 @@
     <button class="play" id="play" type="button" aria-label="Play Before">
       <span class="ring" aria-hidden="true"></span>
       <span class="word">BEFORE</span>
+      <span class="dedication">(for ChillPanic)</span>
       <span class="hint" id="hint">Click to listen</span>
     </button>
     <p class="line" id="line" aria-live="polite"><span></span><span></span></p>

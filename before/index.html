@@ -1,0 +1,263 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="robots" content="noindex, nofollow">
+<title>Before - MXNDR</title>
+<meta name="description" content="Before, an unreleased song by MXNDR.">
+<meta property="og:type" content="music.song">
+<meta property="og:title" content="Before - Max Ender">
+<meta property="og:description" content="Unreleased. Listen with the lyrics, download the WAV.">
+<meta property="og:url" content="https://mxndr.com/before/">
+<meta property="og:image" content="https://mxndr.com/before/og.jpg">
+<meta property="og:image:width" content="1200">
+<meta property="og:image:height" content="630">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:image" content="https://mxndr.com/before/og.jpg">
+<link rel="icon" href="cover.jpg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&display=swap">
+<link rel="preload" href="cover.jpg" as="image">
+<style>
+  :root {
+    --ink: #f4e9e4;
+    --ink-dim: rgba(244, 233, 228, .62);
+    --accent: #f2b49c;
+    --night: #0d0712;
+    --ease: cubic-bezier(.16, 1, .3, 1);
+    color-scheme: dark;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--night); color: var(--ink); }
+  body {
+    font-family: "Jost", system-ui, sans-serif;
+    font-weight: 300;
+    -webkit-font-smoothing: antialiased;
+    overflow-x: hidden;
+  }
+  #paint {
+    position: fixed; top: 0; left: 0; width: 100%; height: 100vh; height: 100lvh;
+    display: block; z-index: 0;
+  }
+  .no-gl #paint { display: none; }
+  .no-gl .fallback { display: block; }
+  .fallback {
+    display: none; position: fixed; inset: -6%; z-index: 0;
+    background: url(cover.jpg) center / cover no-repeat;
+    filter: saturate(.8) brightness(.75);
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .fallback { animation: drift 40s ease-in-out infinite alternate; }
+  }
+  @keyframes drift { to { transform: scale(1.08) rotate(1.5deg); } }
+
+  main { position: relative; z-index: 1; }
+
+  .brand {
+    position: fixed; z-index: 3;
+    top: calc(env(safe-area-inset-top, 0px) + 1.5rem); left: clamp(1rem, 4vw, 2.5rem);
+    margin: 0; line-height: 0;
+  }
+  .brand img { display: block; width: 9.5rem; height: auto; }
+
+  .links {
+    position: fixed; z-index: 3;
+    top: calc(env(safe-area-inset-top, 0px) + 1.1rem); right: clamp(.5rem, 3vw, 2rem);
+    display: flex; gap: .25rem;
+  }
+  .links a {
+    color: var(--ink); text-decoration: none; padding: .4rem .6rem;
+    font-size: .8125rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase;
+    border-bottom: 1px solid rgba(244, 233, 228, .35);
+    transition: color .4s var(--ease), border-color .4s var(--ease);
+  }
+  .links a:hover, .links a:focus-visible { color: var(--accent); border-color: var(--accent); outline: none; }
+  html { scroll-behavior: smooth; }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } }
+  @media (max-width: 480px) {
+    .brand { top: calc(env(safe-area-inset-top, 0px) + 1.6rem); }
+    .brand img { width: 6.75rem; }
+    .links a { font-size: .6875rem; letter-spacing: .14em; padding: .4rem .45rem; }
+  }
+
+  .hero {
+    -webkit-user-select: none; user-select: none; -webkit-touch-callout: none;
+    position: relative; min-height: 100dvh;
+    display: grid; place-items: center;
+    padding: 6rem 1.25rem;
+  }
+  .play {
+    position: relative; display: grid; justify-items: center; gap: 1.6rem;
+    background: none; border: 0; color: inherit; font: inherit;
+    cursor: pointer; padding: 3.5rem 4rem;
+    transition: transform 1.4s var(--ease), opacity .8s var(--ease);
+    -webkit-tap-highlight-color: transparent;
+  }
+  .word {
+    font-weight: 300; font-size: clamp(2.4rem, 7.5vw, 5.6rem);
+    letter-spacing: .62em; margin-right: -.62em; line-height: 1;
+    text-shadow: 0 0 40px rgba(13, 7, 18, .55);
+  }
+  .ring {
+    position: absolute; inset: 0; border-radius: 999px;
+    border: 1px solid rgba(244, 233, 228, .38);
+    box-shadow: inset 0 0 60px rgba(242, 180, 156, .08);
+    transition: border-color .6s var(--ease), opacity .8s var(--ease);
+  }
+  .hint {
+    font-size: .75rem; font-weight: 400; letter-spacing: .34em; text-transform: uppercase;
+    color: var(--ink-dim); margin-right: -.34em;
+    transition: color .6s var(--ease), opacity .6s var(--ease);
+  }
+  .play:hover .ring, .play:focus-visible .ring { border-color: var(--accent); }
+  .play:hover .hint, .play:focus-visible .hint { color: var(--accent); }
+  .play:focus-visible { outline: none; }
+  .play:active { transform: scale(.985); }
+  @media (prefers-reduced-motion: no-preference) {
+    .ring { animation: breathe 3.6s ease-in-out infinite; }
+    .hint { animation: hintfade 3.6s ease-in-out infinite; }
+  }
+  @keyframes breathe {
+    0%, 100% { transform: scale(1); opacity: .55; }
+    50% { transform: scale(1.06); opacity: 1; }
+  }
+  @keyframes hintfade { 0%, 100% { opacity: .55; } 50% { opacity: 1; } }
+
+  .is-started .play { transform: translateY(calc(-50dvh + 7.5rem)) scale(.42); cursor: default; }
+  .is-started .ring, .is-started .hint { opacity: 0; animation: none; }
+
+  .line {
+    position: absolute; left: 0; right: 0; top: 52%;
+    margin: 0; padding: 0 1.5rem; text-align: center; pointer-events: none;
+    display: grid;
+  }
+  .line::before {
+    content: ""; position: absolute; left: 50%; top: 50%; z-index: -1;
+    width: min(56rem, 100%); height: 11rem; transform: translate(-50%, -50%);
+    background: radial-gradient(closest-side, rgba(13, 7, 18, .5), rgba(13, 7, 18, 0));
+    opacity: 0; transition: opacity 1.2s var(--ease);
+  }
+  .is-started .line::before { opacity: 1; }
+  .line span {
+    grid-area: 1 / 1;
+    font-size: clamp(1.5rem, 4.2vw, 3.1rem); line-height: 1.25; letter-spacing: .06em; font-weight: 400;
+    text-shadow: 0 2px 30px rgba(13, 7, 18, .9), 0 0 3px rgba(13, 7, 18, .6);
+    opacity: 0; transform: translateY(.6rem); filter: blur(6px);
+    transition: opacity 1s var(--ease), transform 1.2s var(--ease), filter 1s var(--ease);
+  }
+  .line span.on { opacity: 1; transform: none; filter: none; }
+
+  .lyrics {
+    position: relative; padding: 8rem 1.5rem 6rem;
+    background: linear-gradient(to bottom, rgba(13, 7, 18, 0), rgba(13, 7, 18, .78) 18rem);
+  }
+  .lyrics h2 {
+    margin: 0 auto 3.5rem; max-width: 34rem;
+    font-weight: 300; font-size: 1.75rem; letter-spacing: .2em;
+  }
+  .lyrics .block { max-width: 34rem; margin: 0 auto 2.6rem; }
+  .lyrics .tag {
+    display: block; font-size: .6875rem; font-weight: 500; letter-spacing: .28em;
+    text-transform: uppercase; color: var(--accent); margin-bottom: .7rem;
+  }
+  .lyrics p { margin: 0; font-size: 1.1875rem; line-height: 1.7; color: var(--ink); }
+  .lyrics .now { color: var(--accent); }
+
+  footer {
+    position: relative; padding: 5rem 1.5rem calc(8rem + env(safe-area-inset-bottom, 0px));
+    background: rgba(13, 7, 18, .78);
+    display: grid; justify-items: center; gap: 1.25rem; text-align: center;
+  }
+  .download {
+    display: inline-block; padding: 1rem 2.2rem; border-radius: 999px;
+    border: 1px solid var(--accent); color: var(--night); background: var(--accent);
+    font-size: .875rem; font-weight: 500; letter-spacing: .2em; text-transform: uppercase;
+    text-decoration: none; white-space: nowrap;
+    transition: background .4s var(--ease), color .4s var(--ease), transform .2s var(--ease);
+  }
+  .download:hover, .download:focus-visible { background: transparent; color: var(--accent); outline: none; }
+  .download:active { transform: scale(.98); }
+  .meta { margin: 0; font-size: .875rem; letter-spacing: .12em; color: var(--ink-dim); }
+
+  .bar {
+    position: fixed; z-index: 3; left: 50%; bottom: calc(env(safe-area-inset-bottom, 0px) + 1.25rem);
+    transform: translateX(-50%);
+    width: min(34rem, calc(100% - 2rem));
+    display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: 1rem;
+    padding: .65rem 1.1rem; border-radius: 999px;
+    background: rgba(13, 7, 18, .55);
+    border: 1px solid rgba(244, 233, 228, .14);
+    -webkit-backdrop-filter: blur(18px) saturate(140%); backdrop-filter: blur(18px) saturate(140%);
+  }
+  .bar[hidden] { display: none; }
+  .bar button {
+    background: none; border: 0; color: var(--ink); font: inherit; cursor: pointer;
+    font-size: .75rem; font-weight: 500; letter-spacing: .24em; text-transform: uppercase;
+    padding: .4rem .2rem; min-width: 4.4rem; text-align: left;
+  }
+  .bar button:hover, .bar button:focus-visible { color: var(--accent); outline: none; }
+  .track { position: relative; height: 1.5rem; cursor: pointer; touch-action: none; }
+  .track::before {
+    content: ""; position: absolute; left: 0; right: 0; top: 50%; height: 1px;
+    background: rgba(244, 233, 228, .22);
+  }
+  .fill {
+    position: absolute; left: 0; top: calc(50% - 1px); height: 2px; width: 0;
+    background: var(--accent);
+  }
+  .time { font-size: .75rem; letter-spacing: .1em; color: var(--ink-dim); font-variant-numeric: tabular-nums; }
+
+  @media (max-width: 640px) {
+    .play { padding: 2.6rem 2.2rem; gap: 1.2rem; }
+    .is-started .play { transform: translateY(calc(-50dvh + 6.5rem)) scale(.55); }
+    .line { top: 48%; }
+    .lyrics p { font-size: 1.0625rem; }
+  }
+  @media (prefers-reduced-motion: reduce) {
+    .play, .line span { transition-duration: .01s; }
+  }
+</style>
+</head>
+<body>
+<canvas id="paint" aria-hidden="true"></canvas>
+<div class="fallback" aria-hidden="true"></div>
+<p class="brand"><img src="max-ender.png" alt="Max Ender" width="900" height="82"></p>
+<nav class="links" aria-label="Page">
+  <a href="#lyrics">Lyrics</a>
+  <a href="#download">Download WAV</a>
+</nav>
+
+<main>
+  <section class="hero" id="hero">
+    <button class="play" id="play" type="button" aria-label="Play Before">
+      <span class="ring" aria-hidden="true"></span>
+      <span class="word">BEFORE</span>
+      <span class="hint" id="hint">Click to listen</span>
+    </button>
+    <p class="line" id="line" aria-live="polite"><span></span><span></span></p>
+  </section>
+
+  <section class="lyrics" id="lyrics">
+    <h2>Lyrics</h2>
+  </section>
+
+  <footer id="download">
+    <a class="download" href="Before.wav" download="MXNDR - Before.wav">Download WAV</a>
+    <p class="meta">MXNDR, Before. Unreleased, 2026.</p>
+  </footer>
+</main>
+
+<div class="bar" id="bar" hidden>
+  <button type="button" id="toggle">Pause</button>
+  <div class="track" id="track" role="slider" aria-label="Seek" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" tabindex="0"><div class="fill" id="fill"></div></div>
+  <span class="time" id="time">0:00</span>
+</div>
+
+<audio id="audio" src="before.mp3" preload="metadata"></audio>
+<script src="lyrics.js"></script>
+<script src="fluid.js"></script>
+<script src="main.js"></script>
+</body>
+</html>
